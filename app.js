@@ -42,29 +42,57 @@ app.get('/', function(req, res){
 
 app.listen(3000);
 
-var clientCount = 0;
 var socket = io.listen(app);
+var playerCount = 0;
+var clientCount = 0;
+var first = true;
+var playing = false;
+var clients = {};
 socket.on('connection', function(client) {
-  console.log('Client Connected');
   clientCount++;
+  clients[client.sessionId] = 'NOT_JOINED';
+  sendClientCount(client);
+
   client.on('message', function(message) {
-    console.log('message received. :' + message);
     var message = JSON.parse(message);
-    if (message.start) {
-      sendRandomWord(client, clientCount);
+    if (message.join) {
+      if (message.join == 'new') { 
+        clients[client.sessionId] = 'JOINED';
+      }
+      if (playing == false) {
+        setTimeout(sendRandomWord, 3000, client);
+        playing = true;
+      }
     }
     if (message.position) {
       client.broadcast(json({'others': message.position,
                              'clientId': client.sessionId}));
       client.send(json({'you': message.position}));
     }
+    if (message.finished) {
+      playing = false;
+    }
   });
   client.on('disconnect', function() {
-    console.log('Client disconnected.');
     clientCount--;
+    clients[client.sessionId] = undefined;
+    
+    var playerCount = 0;
+    for (var n in clients) {
+      if (clients[n] == 'JOINED') {
+        playerCount++;
+      }
+    }
+    if (playerCount == 0) {
+      playing = false;
+    }
+    sendClientCount(client);
   });
 });
 
+function sendClientCount() {
+  socket.broadcast(json({'clientCount': clientCount}));
+}
 
 function sendRandomWord(client) {
   var wikipedia = http.createClient(80, 'en.wikipedia.org');
@@ -81,14 +109,19 @@ function sendRandomWord(client) {
       word = word.replace(/_/g, ' ');
       var decoded = decodeURI(word);
       if (word != decoded) {
-        console.log('retry');
         sendRandomWord(client);
       } else {
-        console.log(word);
-        var message = {'start': clientCount,
-                       'word': word};
-        client.broadcast(json(message));
-        client.send(json(message));
+        var notCastClients = [];
+        var playerCount = 0;
+        for (var n in clients) {
+          if (clients[n] == 'NOT_JOINED') {
+            notCastClients.push(n);
+          } else if (clients[n] == 'JOINED') {
+            playerCount++;
+          }
+        }
+        var message = {'word': word, 'playerCount': playerCount};
+        socket.broadcast(json(message), notCastClients);
       }
     }
   });

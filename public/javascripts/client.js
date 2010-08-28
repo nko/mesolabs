@@ -1,27 +1,28 @@
 io.setPath('/javasciprts/');
 var socket = new io.Socket('192.168.0.5');
+socket.connect();
 
 $(document).ready(function() {
   $('#start').click(function(event) {
-    socket.connect();
-    socket.send(JSON.stringify({'start': 'start'}));
+    socket.send(JSON.stringify({'join': 'new'}));
   }).focus();
   $('#next').click(function(event) {
-    socket.send(JSON.stringify({'start': 'start'}));
+    socket.send(JSON.stringify({'join': 'continue'}));
   });
 });
 
 var word = '';
 socket.addEvent('message', function(data) {
   data = JSON.parse(data);
-  if (data.start) {
+  if (data.clientCount) { 
+    $('#clientCount').text(data.clientCount + ' people are online.');
+  }
+  if (data.word) {
     $('#count').show();
     $('#next').hide();
     $('#opening').hide();
     $('#playing').show();
     
-    var clientCount = data.start;
-    $('#clientCount').text(clientCount + ' people are online.');
     word = data.word;
     $('#word').text(word);
     var currentLength = 0;
@@ -61,7 +62,7 @@ socket.addEvent('message', function(data) {
     });
     count.text(currentLength + '/' + word.length);
     updateYou(0);
-    prepareOthers(clientCount);
+    prepareOthers(data.playerCount);
     updateOthers(0);
   }
   if (data.you) {
@@ -86,6 +87,7 @@ function updateYou(position) {
   }
   if (word.length == position) {
     inputed = 'YOU WIN!!';
+    socket.send(JSON.stringify({'finished': true}));
     clean();
   } else {
     inputed = inputed + '_';
