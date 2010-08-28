@@ -1,18 +1,33 @@
-io.setPath('/javasciprts');
-var socket = new io.Socket('localhost');
-socket.connect();
-//socket.send('hoge');
+io.setPath('/javasciprts/');
+var socket = new io.Socket('192.168.0.5');
+
+$(document).ready(function() {
+  $('#start').click(function(event) {
+    socket.connect();
+    socket.send(JSON.stringify({'start': 'start'}));
+  }).focus();
+  $('#next').click(function(event) {
+    socket.send(JSON.stringify({'start': 'start'}));
+  });
+});
+
 var word = '';
 socket.addEvent('message', function(data) {
   data = JSON.parse(data);
   if (data.start) {
+    $('#count').show();
+    $('#next').hide();
+    $('#opening').hide();
+    $('#playing').show();
+ 
     word = data.start;
     $('#word').text(word);
-    var count = $('#count');
     var currentLength = 0;
     var input = $('#input');
+    var count = $('#count');
 
     input.attr('value', '');
+    input.removeAttr('disabled');
     input.css('width', word.length * 8);
     input.focus();
     input.keydown(function(event) {
@@ -21,6 +36,7 @@ socket.addEvent('message', function(data) {
       if (ignoreKeyCodes.indexOf(',' + keyCode + ',') > -1) {
         return false;
       }
+      return true;
     });
     input.keypress(function(event) {
       var keyCode = event.which;
@@ -38,6 +54,7 @@ socket.addEvent('message', function(data) {
         count.text(currentLength + '/' + word.length);
         socket.send(JSON.stringify(
           {'position': currentLength}));
+        return true;
       }
     });
     count.text(currentLength + '/' + word.length);
@@ -64,7 +81,17 @@ function updateYou(position) {
   for (var i = 0; i < position; i++) {
     inputed = inputed + '&nbsp;';
   }
-  inputed = inputed + '_';
+  if (word.length == position) {
+    inputed = 'YOU WIN!!';
+    $('#input').attr('disabled', 'disabled').unbind('keypress').unbind('keydown');
+    $('#count').hide();
+    $('#next').show().focus();
+  } else {
+    inputed = inputed + '_';
+    for (var i = position; i < word.length-1; i++) {
+      inputed = inputed + '&nbsp;';
+    }
+  }
   $('#you').html(inputed);
 }
 
@@ -73,7 +100,17 @@ function updateOthers(position) {
   for (var i = 0; i < position; i++) { 
     inputed = inputed + '&nbsp;';
   }
-  inputed = inputed + '^';
+  if (word.length == position) {
+    inputed = 'YOU LOSE!!';
+    $('#input').attr('disabled', 'disabled').unbind('keypress').unbind('keydown');
+    $('#count').hide();
+    $('#next').show().focus();
+  } else {
+    inputed = inputed + '^';
+    for (var i = position; i < word.length-1; i++) {
+      inputed = inputed + '&nbsp;';
+    }
+  }
   $('#others').html(inputed);
 }
 

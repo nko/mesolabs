@@ -35,8 +35,7 @@ app.configure('production', function(){
 app.get('/', function(req, res){
     res.render('index.jade', {
         locals: {
-            title: 'Typing Championship',
-            word: ''
+            title: 'Typing Championship'
         }
     });
 });
@@ -46,10 +45,12 @@ app.listen(3000);
 var socket = io.listen(app);
 socket.on('connection', function(client) {
   console.log('Client Connected');
-  sendRandomWord(client);
   client.on('message', function(message) {
     console.log('message received. :' + message);
     var message = JSON.parse(message);
+    if (message.start) {
+      sendRandomWord(client);
+    }
     if (message.position) {
       client.broadcast(json({'others': message.position}));
       client.send(json({'you': message.position}));
