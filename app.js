@@ -42,14 +42,16 @@ app.get('/', function(req, res){
 
 app.listen(3000);
 
+var clientCount = 0;
 var socket = io.listen(app);
 socket.on('connection', function(client) {
   console.log('Client Connected');
+  clientCount++;
   client.on('message', function(message) {
     console.log('message received. :' + message);
     var message = JSON.parse(message);
     if (message.start) {
-      sendRandomWord(client);
+      sendRandomWord(client, clientCount);
     }
     if (message.position) {
       client.broadcast(json({'others': message.position}));
@@ -58,6 +60,7 @@ socket.on('connection', function(client) {
   });
   client.on('disconnect', function() {
     console.log('Client disconnected.');
+    clientCount--;
   });
 });
 
@@ -81,7 +84,8 @@ function sendRandomWord(client) {
         sendRandomWord(client);
       } else {
         console.log(word);
-        var message = {'start': word};
+        var message = {'start': clientCount,
+                       'word': word};
         client.broadcast(json(message));
         client.send(json(message));
       }

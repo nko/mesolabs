@@ -19,8 +19,9 @@ socket.addEvent('message', function(data) {
     $('#next').hide();
     $('#opening').hide();
     $('#playing').show();
- 
-    word = data.start;
+    
+    $('#clientCount').text(data.start + ' people are online.');
+    word = data.word;
     $('#word').text(word);
     var currentLength = 0;
     var input = $('#input');
@@ -41,7 +42,7 @@ socket.addEvent('message', function(data) {
     input.keypress(function(event) {
       var keyCode = event.which;
 
-      var ignoreKeyCodes = ',8,9,17,18,19,20,27,33,34,35,36,37,38,39,145,';
+      var ignoreKeyCodes = ',8,9,17,18,19,20,27,33,34,35,36,38,145,';
       if (ignoreKeyCodes.indexOf(',' + keyCode + ',') > -1) {
         return false;
       }

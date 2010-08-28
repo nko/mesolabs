@@ -19,6 +19,9 @@ h1 {
 #next {
   display: none;
 }
+#clientCount {
+  text-align: center;
+}
 #playing {
   text-align: center;
   display: none;
