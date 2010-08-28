@@ -1,0 +1,15 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", "Helvetica Nueue", Arial, sans-serif;
+}
+#you {
+  color: red;
+  font: 32px "Courier New";
+}
+#others {
+  color: blue;
+  font: 32px "Courier New";
+}
+#word {
+  font: 32px "Courier New";
+}
