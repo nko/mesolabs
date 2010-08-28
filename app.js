@@ -54,7 +54,8 @@ socket.on('connection', function(client) {
       sendRandomWord(client, clientCount);
     }
     if (message.position) {
-      client.broadcast(json({'others': message.position}));
+      client.broadcast(json({'others': message.position,
+                             'clientId': client.sessionId}));
       client.send(json({'you': message.position}));
     }
   });

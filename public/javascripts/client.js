@@ -20,7 +20,8 @@ socket.addEvent('message', function(data) {
     $('#opening').hide();
     $('#playing').show();
     
-    $('#clientCount').text(data.start + ' people are online.');
+    var clientCount = data.start;
+    $('#clientCount').text(clientCount + ' people are online.');
     word = data.word;
     $('#word').text(word);
     var currentLength = 0;
@@ -60,13 +61,14 @@ socket.addEvent('message', function(data) {
     });
     count.text(currentLength + '/' + word.length);
     updateYou(0);
+    prepareOthers(clientCount);
     updateOthers(0);
   }
   if (data.you) {
     updateYou(data.you);
   }
   if (data.others) {
-    updateOthers(data.others);
+    updateOthers(data.others, data.clientId);
   }
 });
 
@@ -84,9 +86,7 @@ function updateYou(position) {
   }
   if (word.length == position) {
     inputed = 'YOU WIN!!';
-    $('#input').attr('disabled', 'disabled').unbind('keypress').unbind('keydown');
-    $('#count').hide();
-    $('#next').show().focus();
+    clean();
   } else {
     inputed = inputed + '_';
     for (var i = position; i < word.length-1; i++) {
@@ -96,22 +96,42 @@ function updateYou(position) {
   $('#you').html(inputed);
 }
 
-function updateOthers(position) {
+function prepareOthers(clientCount) {
+  $('.others').remove();
+  for (var i = 0; i < clientCount - 1; i++) {
+    $('#word').after('<div class="others"></div>');
+  }
+}
+
+function updateOthers(position, id) {
   var inputed = '';
   for (var i = 0; i < position; i++) { 
     inputed = inputed + '&nbsp;';
   }
   if (word.length == position) {
     inputed = 'YOU LOSE!!';
-    $('#input').attr('disabled', 'disabled').unbind('keypress').unbind('keydown');
-    $('#count').hide();
-    $('#next').show().focus();
+    clean();
   } else {
     inputed = inputed + '^';
     for (var i = position; i < word.length-1; i++) {
       inputed = inputed + '&nbsp;';
     }
   }
-  $('#others').html(inputed);
+  if (id) {
+    if($('#' + id).attr('id')) {
+      $('#' + id).html(inputed);
+    } else {
+      $('.others:not([id]):first').attr('id', id).html(inputed);
+    }
+  } else {
+    $('.others').html(inputed);
+  }
 }
+
+function clean() {
+  $('#input').attr('disabled', 'disabled').unbind('keypress').unbind('keydown');
+  $('#count').hide();
+  $('#next').show().focus();
+}
+
 
