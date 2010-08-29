@@ -78,7 +78,7 @@ socket.addEvent('message', function(data) {
       $('#word').text(word);
       $('#you').show();
       $('.others').show();
-      $('#count').show();
+      count.show();
       input.removeAttr('disabled');
       input.css('width', word.length * 8);
       input.focus();
