@@ -111,7 +111,7 @@ function updateOthers(position, id) {
     inputed = inputed + '&nbsp;';
   }
   if (word.length == position) {
-    inputed = 'YOU LOSE!!';
+    inputed = 'WINNER';
     clean();
   } else {
     inputed = inputed + '^';
