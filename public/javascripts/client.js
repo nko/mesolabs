@@ -1,5 +1,5 @@
-io.setPath('/javasciprts/');
-var socket = new io.Socket('192.168.0.5');
+io.setPath('/home/node/node-service/current/public/javascripts/');
+var socket = new io.Socket('mesolabs.no.de');
 socket.connect();
 
 $(document).ready(function() {
