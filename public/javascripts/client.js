@@ -10,7 +10,7 @@ $(document).ready(function() {
     socket.send(JSON.stringify({'join': 'continue'}));
   });
 });
-
+var timeoutId;
 var word = '';
 socket.addEvent('message', function(data) {
   data = JSON.parse(data);
@@ -18,17 +18,19 @@ socket.addEvent('message', function(data) {
     $('#clientCount').text(data.clientCount + ' people are online.');
   }
   if (data.word) {
-    $('#next').hide();
-    $('#opening').hide();
-    $('#you').hide();
-    $('#playing').show();
-
     word = data.word;
     var currentLength = 0;
     var input = $('#input');
     var count = $('#count');
 
+    $('#next').hide();
+    $('#opening').hide();
+    $('#you').hide();
+    count.hide();
+    $('#playing').show();
+
     input.attr('value', '');
+    input.attr('disabled', 'disabled');
     input.keydown(function(event) {
       var keyCode = event.which;
       var ignoreKeyCodes = ',8,9,17,18,19,20,27,33,34,35,36,37,38,39,40,45,46,145,';
@@ -68,6 +70,10 @@ socket.addEvent('message', function(data) {
     setTimeout(function() {
       $('#word').text('1');
     }, 2000);
+    var timeoutTime = word.length * 1000;
+    if (timeoutTime < 10 * 1000) {
+      timeoutTime = 10 * 1000;
+    }
     setTimeout(function () {
       $('#word').text(word);
       $('#you').show();
@@ -76,6 +82,11 @@ socket.addEvent('message', function(data) {
       input.removeAttr('disabled');
       input.css('width', word.length * 8);
       input.focus();
+      timeoutId = setTimeout(function() {
+        socket.send(JSON.stringify({'finished': true}));
+        clean();
+        $('#you').text('TimeOver!!!');
+      }, timeoutTime);
     }, 3000);
 
   }
@@ -145,6 +156,7 @@ function updateOthers(position, id) {
 }
 
 function clean() {
+  clearTimeout(timeoutId);
   $('#input').attr('disabled', 'disabled').unbind('keypress').unbind('keydown');
   $('#count').hide();
   $('#next').show().focus();
