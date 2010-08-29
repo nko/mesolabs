@@ -18,21 +18,17 @@ socket.addEvent('message', function(data) {
     $('#clientCount').text(data.clientCount + ' people are online.');
   }
   if (data.word) {
-    $('#count').show();
     $('#next').hide();
     $('#opening').hide();
+    $('#you').hide();
     $('#playing').show();
-    
+
     word = data.word;
-    $('#word').text(word);
     var currentLength = 0;
     var input = $('#input');
     var count = $('#count');
 
     input.attr('value', '');
-    input.removeAttr('disabled');
-    input.css('width', word.length * 8);
-    input.focus();
     input.keydown(function(event) {
       var keyCode = event.which;
       var ignoreKeyCodes = ',8,9,17,18,19,20,27,33,34,35,36,37,38,39,40,45,46,145,';
@@ -64,6 +60,24 @@ socket.addEvent('message', function(data) {
     updateYou(0);
     prepareOthers(data.playerCount);
     updateOthers(0);
+
+    $('#word').text('3');
+    setTimeout(function() {
+      $('#word').text('2');
+    }, 1000);
+    setTimeout(function() {
+      $('#word').text('1');
+    }, 2000);
+    setTimeout(function () {
+      $('#word').text(word);
+      $('#you').show();
+      $('.others').show();
+      $('#count').show();
+      input.removeAttr('disabled');
+      input.css('width', word.length * 8);
+      input.focus();
+    }, 3000);
+
   }
   if (data.you) {
     updateYou(data.you);
@@ -101,7 +115,7 @@ function updateYou(position) {
 function prepareOthers(clientCount) {
   $('.others').remove();
   for (var i = 0; i < clientCount - 1; i++) {
-    $('#word').after('<div class="others"></div>');
+    $('<div class="others"></div>').insertAfter($('#word')).hide();
   }
 }
 
