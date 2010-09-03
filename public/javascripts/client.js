@@ -1,4 +1,4 @@
-io.setPath('/home/node/node-service/current/public/javascripts/');
+io.setPath('/javascripts/');
 var socket = new io.Socket('mesolabs.no.de');
 socket.connect();
 
