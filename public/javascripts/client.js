@@ -42,7 +42,7 @@ socket.addEvent('message', function(data) {
     input.keypress(function(event) {
       var keyCode = event.which;
 
-      var ignoreKeyCodes = ',8,9,17,18,19,20,27,33,34,35,36,38,145,';
+      var ignoreKeyCodes = ',8,9,17,18,19,20,27,34,35,36,38,145,';
       if (ignoreKeyCodes.indexOf(',' + keyCode + ',') > -1) {
         return false;
       }
