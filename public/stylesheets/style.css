@@ -34,3 +34,6 @@ h1 {
   height: 64px;
   width: 480px;
 }
+#input {
+  ime-mode: disabled;
+}
