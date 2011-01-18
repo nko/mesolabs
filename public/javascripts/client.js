@@ -1,5 +1,4 @@
-io.setPath('/javascripts/');
-var socket = new io.Socket('mesolabs.no.de');
+var socket = new io.Socket(null, {port: 8151});
 socket.connect();
 
 $(document).ready(function() {
