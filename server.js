@@ -9,7 +9,7 @@ var http = require('http'),
     io = require('socket.io'),
     json = JSON.stringify;
 
-var app = express.createServer();
+var app = module.exports = express.createServer();
 
 // Configuration
 
