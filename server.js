@@ -3,7 +3,6 @@
  * Module dependencies.
  */
 
-
 var http = require('http'),
     express = require('express'),
     connect = require('connect'),
@@ -41,7 +40,7 @@ app.get('/', function(req, res){
     });
 });
 
-app.listen(8151);
+app.listen(8066);
 
 var socket = io.listen(app);
 var playerCount = 0;
