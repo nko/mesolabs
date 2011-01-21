@@ -2,7 +2,6 @@
 /**
  * Module dependencies.
  */
-
 var http = require('http'),
     express = require('express'),
     connect = require('connect'),
