@@ -40,7 +40,7 @@ app.get('/', function(req, res){
     });
 });
 
-app.listen(8066);
+app.listen(8186);
 
 var socket = io.listen(app);
 var playerCount = 0;
