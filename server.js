@@ -43,7 +43,10 @@ app.get('/', function(req, res){
 
 app.listen(8080);
 
-var socket = io.listen(app);
+var socket = io.listen(app, {
+  flashPolicyServer: false,
+  transports: ['htmlfile', 'xhr-multipart', 'xhr-polling', 'jsonp-polling']
+});
 var playerCount = 0;
 var clientCount = 0;
 var first = true;
