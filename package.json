@@ -1,0 +1,21 @@
+{
+  "name": "typing",
+  "description": "Typing game for Node.js Knockout",
+  "version": "0.0.0",
+  "repository": "git://github.com/nko/mesolabs.git",
+  "author": "Toshihiro Shimizu <shimizu.toshihiro@gmail.com>",
+  "main": "server",
+  "directories": {
+    "lib": "."
+  },
+  "engines": {
+    "node": "*"
+  },
+  "dependencies": {
+    "express": "*",
+    "jade": "*",
+    "less": "*",
+    "socket.io": "*",
+  }
+  
+}
