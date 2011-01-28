@@ -41,7 +41,7 @@ app.get('/', function(req, res){
     });
 });
 
-app.listen(8246);
+app.listen(8254);
 
 var socket = io.listen(app);
 // for duostack
