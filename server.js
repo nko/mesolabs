@@ -19,7 +19,7 @@ app.configure(function(){
     app.use(connect.bodyDecoder());
     app.use(connect.methodOverride());
     app.use(connect.compiler({ src: __dirname + '/public', enable: ['less'] }));
-    app.use(app.router);
+    app.use('/typing', app.router);
     app.use(connect.staticProvider(__dirname + '/public'));
 });
 
@@ -41,7 +41,7 @@ app.get('/', function(req, res){
     });
 });
 
-app.listen(8254);
+app.listen(80);
 
 var socket = io.listen(app);
 // for duostack
