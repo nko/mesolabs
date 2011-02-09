@@ -19,7 +19,7 @@ app.configure(function(){
     app.use(connect.bodyDecoder());
     app.use(connect.methodOverride());
     app.use(connect.compiler({ src: __dirname + '/public', enable: ['less'] }));
-    app.use('/typing', app.router);
+    app.use(app.router);
     app.use(connect.staticProvider(__dirname + '/public'));
 });
 
