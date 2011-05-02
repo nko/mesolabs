@@ -1,4 +1,4 @@
-var socket = new io.Socket();
+var socket = new io.Socket(null, {port: 3002});
 socket.connect();
 
 $(document).ready(function() {
